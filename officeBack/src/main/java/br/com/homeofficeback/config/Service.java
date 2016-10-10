@@ -24,7 +24,7 @@ public class Service extends Application {
 		conf.setVersion("1.0.0");
 		conf.setHost("localhost:8080");
 		conf.setBasePath("/homeoffice/v1");
-		conf.setSchemes(new String[] { "http" });
+		conf.setSchemes(new String[] { "http", "https" });
 		conf.setResourcePackage("br.com.homeofficeback");
 		conf.setScan(true);
 	}

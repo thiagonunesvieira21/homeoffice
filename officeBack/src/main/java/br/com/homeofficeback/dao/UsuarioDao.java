@@ -4,6 +4,7 @@ import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import br.com.homeofficeback.entity.UsuarioEntity;
@@ -30,9 +31,11 @@ public class UsuarioDao extends GenericDaoJpaImpl<UsuarioEntity, Integer> {
 			CriteriaQuery<UsuarioEntity> cq = cb.createQuery(UsuarioEntity.class);
 			Root<UsuarioEntity> root = cq.from(UsuarioEntity.class);
 
-			cq.where(cb.equal(root.get("deLogin"), login));
-			cq.where(cb.equal(root.get("deSenha"), senha));
-
+			Predicate p1 = cb.and(cb.equal(root.get("deLogin"), login));
+			Predicate p2 = cb.and(cb.equal(root.get("deSenha"), senha));
+			
+			cq.where(p1, p2);
+			
 			return entityManager.createQuery(cq).getSingleResult();
 		} catch (NoResultException e) {
 			return null;

@@ -6,34 +6,31 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "tb005_comercio_cliente", schema = "public")
-public class ComercioClienteEntity extends BaseEntity<ComercioClientePkEntity>  implements Serializable {
+public class ComercioClienteEntity extends BaseEntity<ComercioClientePkEntity> implements Serializable {
 
 	private static final long serialVersionUID = 5489495288008760483L;
 
 	private ComercioClientePkEntity id;
 	private Date dtVinculo;
-	private UsuarioEntity usuario;
-	private ComercioEntity comercio;
+	private Integer nuUsuario;
+	private Integer nuComercio;
 
 	public ComercioClienteEntity() {
 		super();
 	}
 
-	public ComercioClienteEntity(ComercioClientePkEntity id, Date dtVinculo, UsuarioEntity usuario,
-			ComercioEntity comercio) {
+	public ComercioClienteEntity(ComercioClientePkEntity id, Date dtVinculo, Integer nuUsuario, Integer nuComercio) {
 		super();
 		this.id = id;
 		this.dtVinculo = dtVinculo;
-		this.usuario = usuario;
-		this.comercio = comercio;
+		this.nuUsuario = nuUsuario;
+		this.nuComercio = nuComercio;
 	}
 
 	@EmbeddedId
@@ -55,24 +52,22 @@ public class ComercioClienteEntity extends BaseEntity<ComercioClientePkEntity>  
 		this.dtVinculo = dtVinculo;
 	}
 
-	@ManyToOne
-	@PrimaryKeyJoinColumn(name = "tb001_usuario", columnDefinition = "nu_usuario", referencedColumnName = "nu_usuario")
-	public UsuarioEntity getUsuario() {
-		return usuario;
+	@Column(name = "nu_usuario", nullable = false, insertable = false, updatable = false)
+	public Integer getNuUsuario() {
+		return nuUsuario;
 	}
 
-	public void setUsuario(UsuarioEntity usuario) {
-		this.usuario = usuario;
+	public void setNuUsuario(Integer nuUsuario) {
+		this.nuUsuario = nuUsuario;
 	}
 
-	@ManyToOne
-	@PrimaryKeyJoinColumn(name = "tb002_comercio", columnDefinition = "nu_comercio", referencedColumnName = "nu_comercio")
-	public ComercioEntity getComercio() {
-		return comercio;
+	@Column(name = "nu_comercio", nullable = false, insertable = false, updatable = false)
+	public Integer getNuComercio() {
+		return nuComercio;
 	}
 
-	public void setComercio(ComercioEntity comercio) {
-		this.comercio = comercio;
+	public void setNuComercio(Integer nuComercio) {
+		this.nuComercio = nuComercio;
 	}
 
 }

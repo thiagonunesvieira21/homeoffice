@@ -7,17 +7,21 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import br.com.homeofficeback.dao.CartelaDao;
 import br.com.homeofficeback.dao.ComercioClienteDao;
 import br.com.homeofficeback.dao.ComercioDao;
 import br.com.homeofficeback.dao.GenericDaoJpaImpl.MatchMode;
 import br.com.homeofficeback.dao.GenericDaoJpaImpl.MatchOperator;
 import br.com.homeofficeback.dao.UsuarioDao;
+import br.com.homeofficeback.entity.CartelaEntity;
+import br.com.homeofficeback.entity.CartelaPkEntity;
 import br.com.homeofficeback.entity.ComercioClienteEntity;
 import br.com.homeofficeback.entity.ComercioClientePkEntity;
 import br.com.homeofficeback.entity.ComercioEntity;
 import br.com.homeofficeback.entity.UsuarioEntity;
 import br.com.homeofficeback.enuns.Status;
 import br.com.homeofficeback.model.CadastroUsuario;
+import br.com.homeofficeback.model.ComercioClienteResult;
 import br.com.homeofficeback.model.PesquisarUsuario;
 import br.com.homeofficeback.util.HomeOfficeUtils;
 
@@ -32,6 +36,9 @@ public class UsuarioServiceImpl {
 	
 	@EJB
 	private ComercioClienteDao comercioClienteDao;
+
+	@EJB
+	private CartelaDao cartelaDao;
 
 	public List<UsuarioEntity> listAll(){
 		return dao.findAll();
@@ -106,17 +113,42 @@ public class UsuarioServiceImpl {
 		ComercioClienteEntity entity = new ComercioClienteEntity();
 		
 		ComercioEntity comercio = comercioDao.find(idComercio);
-		entity.setComercio(comercio);
+		entity.setNuComercio(comercio.getId());
 		
 		UsuarioEntity usuario = dao.findByUserName(userName);
-		entity.setUsuario(usuario);
+		entity.setNuUsuario(usuario.getId());
 		
 		Date dtVinculo = new Date(System.currentTimeMillis());
 		entity.setDtVinculo(dtVinculo);
 		
-		entity.setId(new ComercioClientePkEntity(usuario.getId(), comercio.getId(), dtVinculo));
+		entity.setId(new ComercioClientePkEntity(usuario, comercio, dtVinculo));
 		
 		return comercioClienteDao.save(entity);
+	}
+	
+	
+	public List<ComercioClienteResult> findByUserId(UsuarioEntity user){
+		List<ComercioClienteEntity> list = comercioClienteDao.findByUserId(user.getId());
+		List<ComercioClienteResult> result = new ArrayList<>();
+		
+		if(list!=null){
+			for (ComercioClienteEntity comercio : list) {
+				ComercioClienteResult dest = new ComercioClienteResult();
+				
+				HomeOfficeUtils.copyProperties(dest, comercio.getId().getComercio());
+				
+				CartelaEntity cartela = cartelaDao.find(new CartelaPkEntity(user.getId(), comercio.getNuComercio()));
+				
+				if(cartela!=null){
+					dest.setTotalAcessos(cartela.getQtLimiteAcessos());
+					dest.setTotalAcessosCartela(cartela.getQtAcesso());
+					dest.setTotalBonus(cartela.getQtAcessoBonus());
+				}
+				
+				result.add(dest);
+			}
+		}
+		return result;
 	}
 	
 	public UsuarioEntity doLogin(String login, String senha) {

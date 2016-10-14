@@ -6,8 +6,8 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -61,7 +61,7 @@ public class CartelaEntity extends BaseEntity<CartelaPkEntity> implements Serial
 	}
 	
 	@ManyToOne
-	@PrimaryKeyJoinColumn(name = "tb001_usuario", columnDefinition = "nu_usuario", referencedColumnName = "nu_usuario")
+	@JoinColumn(name = "nu_usuario", columnDefinition = "nu_usuario", referencedColumnName = "nu_usuario", insertable = false, updatable = false)
 	public UsuarioEntity getUsuario() {
 		return usuario;
 	}
@@ -71,7 +71,7 @@ public class CartelaEntity extends BaseEntity<CartelaPkEntity> implements Serial
 	}
 
 	@ManyToOne
-	@PrimaryKeyJoinColumn(name = "tb002_comercio", columnDefinition = "nu_comercio", referencedColumnName = "nu_comercio")
+	@JoinColumn(name = "nu_comercio", columnDefinition = "nu_comercio", referencedColumnName = "nu_comercio", insertable = false, updatable = false)
 	public ComercioEntity getComercio() {
 		return comercio;
 	}

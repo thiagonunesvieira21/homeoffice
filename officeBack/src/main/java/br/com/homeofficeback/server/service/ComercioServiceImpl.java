@@ -79,6 +79,8 @@ public class ComercioServiceImpl {
 		
 		HomeOfficeUtils.copyProperties(usuario, cadastrarComercio.getUsuario());
 		
+		usuario.setDeSenha(encodePassword(usuario.getDeSenha()));
+		
 		userDao.save(usuario);
 		
 		ProprietarioEntity proprietario = new ProprietarioEntity();
@@ -109,4 +111,7 @@ public class ComercioServiceImpl {
 		dao.delete(id);
 	}
 	
+	private String encodePassword(String senha){
+		return HomeOfficeUtils.getSHA1SecurePassword(senha);
+	}
 }

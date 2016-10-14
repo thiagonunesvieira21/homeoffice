@@ -5,6 +5,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -13,37 +15,39 @@ public class ComercioClientePkEntity implements Serializable {
 
 	private static final long serialVersionUID = -8433074958254431569L;
 
-	private Integer nuUsuario;
-	private Integer nuComercio;
+	private UsuarioEntity usuario;
+	private ComercioEntity comercio;
 	private Date dtVinculo;
 
 	public ComercioClientePkEntity() {
 		super();
 	}
 
-	public ComercioClientePkEntity(Integer nuUsuario, Integer nuComercio, Date dtVinculo) {
+	public ComercioClientePkEntity(UsuarioEntity usuario, ComercioEntity comercio, Date dtVinculo) {
 		super();
-		this.nuUsuario = nuUsuario;
-		this.nuComercio = nuComercio;
+		this.usuario = usuario;
+		this.comercio = comercio;
 		this.dtVinculo = dtVinculo;
 	}
 
-	@Column(name = "nu_usuario", nullable = false)
-	public Integer getNuUsuario() {
-		return nuUsuario;
+	@ManyToOne
+	@JoinColumn(name = "nu_usuario", columnDefinition="nu_usuario", referencedColumnName="nu_usuario")
+	public UsuarioEntity getUsuario() {
+		return usuario;
 	}
 
-	public void setNuUsuario(Integer nuUsuario) {
-		this.nuUsuario = nuUsuario;
+	public void setUsuario(UsuarioEntity usuario) {
+		this.usuario = usuario;
 	}
 
-	@Column(name = "nu_comercio", nullable = false)
-	public Integer getNuComercio() {
-		return nuComercio;
+	@ManyToOne
+	@JoinColumn(name = "nu_comercio", columnDefinition="nu_comercio", referencedColumnName="nu_comercio")
+	public ComercioEntity getComercio() {
+		return comercio;
 	}
 
-	public void setNuComercio(Integer nuComercio) {
-		this.nuComercio = nuComercio;
+	public void setComercio(ComercioEntity comercio) {
+		this.comercio = comercio;
 	}
 
 	@Temporal(TemporalType.DATE)
@@ -60,9 +64,9 @@ public class ComercioClientePkEntity implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((comercio == null) ? 0 : comercio.hashCode());
 		result = prime * result + ((dtVinculo == null) ? 0 : dtVinculo.hashCode());
-		result = prime * result + ((nuComercio == null) ? 0 : nuComercio.hashCode());
-		result = prime * result + ((nuUsuario == null) ? 0 : nuUsuario.hashCode());
+		result = prime * result + ((usuario == null) ? 0 : usuario.hashCode());
 		return result;
 	}
 
@@ -75,20 +79,20 @@ public class ComercioClientePkEntity implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		ComercioClientePkEntity other = (ComercioClientePkEntity) obj;
+		if (comercio == null) {
+			if (other.comercio != null)
+				return false;
+		} else if (!comercio.equals(other.comercio))
+			return false;
 		if (dtVinculo == null) {
 			if (other.dtVinculo != null)
 				return false;
 		} else if (!dtVinculo.equals(other.dtVinculo))
 			return false;
-		if (nuComercio == null) {
-			if (other.nuComercio != null)
+		if (usuario == null) {
+			if (other.usuario != null)
 				return false;
-		} else if (!nuComercio.equals(other.nuComercio))
-			return false;
-		if (nuUsuario == null) {
-			if (other.nuUsuario != null)
-				return false;
-		} else if (!nuUsuario.equals(other.nuUsuario))
+		} else if (!usuario.equals(other.usuario))
 			return false;
 		return true;
 	}

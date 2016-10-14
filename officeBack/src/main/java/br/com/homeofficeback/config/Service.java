@@ -8,7 +8,10 @@ import javax.ws.rs.core.Application;
 
 import br.com.homeofficeback.security.filter.JWTAuthFilter;
 import br.com.homeofficeback.security.filter.JWTResponseFilter;
+import br.com.homeofficeback.server.controller.AcessoControler;
 import br.com.homeofficeback.server.controller.AuthController;
+import br.com.homeofficeback.server.controller.ComercioController;
+import br.com.homeofficeback.server.controller.TransacaoUsuarioController;
 import br.com.homeofficeback.server.controller.UsuarioController;
 import io.swagger.jaxrs.config.BeanConfig;
 import io.swagger.jaxrs.listing.ApiListingResource;
@@ -37,6 +40,9 @@ public class Service extends Application {
 		resources.add(JWTResponseFilter.class);
 		resources.add(AuthController.class);
 		resources.add(UsuarioController.class);
+		resources.add(ComercioController.class);
+		resources.add(AcessoControler.class);
+		resources.add(TransacaoUsuarioController.class);
 		// classes do swagger...
 		resources.add(ApiListingResource.class);
 		resources.add(SwaggerSerializers.class);

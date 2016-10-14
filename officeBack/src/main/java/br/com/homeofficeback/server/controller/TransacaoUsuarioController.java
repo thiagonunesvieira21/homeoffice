@@ -1,7 +1,12 @@
 package br.com.homeofficeback.server.controller;
 
+import java.util.List;
+
 import javax.ejb.EJB;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -13,6 +18,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.SecurityContext;
 
 import br.com.homeofficeback.entity.ComercioClientePkEntity;
+import br.com.homeofficeback.entity.UsuarioEntity;
+import br.com.homeofficeback.model.ComercioClienteResult;
 import br.com.homeofficeback.security.JWTSecured;
 import br.com.homeofficeback.server.service.UsuarioServiceImpl;
 import io.swagger.annotations.Api;
@@ -20,13 +27,16 @@ import io.swagger.annotations.ApiOperation;
 
 @Api(value = "Transações de usuário")
 @Path("trasacaousuario")
-public class TransacaoUsuario {
+public class TransacaoUsuarioController {
 
 	@Context
 	protected SecurityContext securityContext;
 	
 	@EJB
 	private UsuarioServiceImpl service;
+	
+	@Context
+    private HttpServletRequest request;
 	
 	@PUT
 	@Path("/vincular/{idComercio}")
@@ -40,4 +50,17 @@ public class TransacaoUsuario {
 		return service.vincularAoComercio(username, idComercio);
 	}
 	
+	
+	@GET
+	@JWTSecured
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Comércio vinculados", notes = "Lista os comércio vinculados", responseContainer="List" ,response = ComercioClienteResult.class, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+	public List<ComercioClienteResult> vincular(@HeaderParam(HttpHeaders.AUTHORIZATION) String authorization) {		
+
+		HttpSession session = request.getSession();
+		UsuarioEntity user = (UsuarioEntity) session.getAttribute("sec-user");
+		
+		return service.findByUserId(user);
+	}
 }

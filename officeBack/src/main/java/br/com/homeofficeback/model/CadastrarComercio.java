@@ -42,18 +42,14 @@ public class CadastrarComercio implements Serializable {
 
 	@NotNull
 	@ApiModelProperty(required = true)
-	@Size(max = 3)
 	private Integer nuDddTelefoneFixo;
 
 	@NotNull
 	@ApiModelProperty(required = true)
-	@Size(max = 9)
 	private Integer nuTelefoneFixo;
 
-	@Size(max = 3)
 	private Integer nuDddCelular;
 
-	@Size(max = 9)
 	private Integer nuCelular;
 
 	@NotNull

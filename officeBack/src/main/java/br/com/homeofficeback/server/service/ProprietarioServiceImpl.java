@@ -1,6 +1,7 @@
 package br.com.homeofficeback.server.service;
 
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
 
 import br.com.homeofficeback.dao.ComercioDao;
 import br.com.homeofficeback.dao.ProprietarioDao;
@@ -12,6 +13,7 @@ import br.com.homeofficeback.entity.UsuarioEntity;
 import br.com.homeofficeback.model.CadastroUsuario;
 import br.com.homeofficeback.util.HomeOfficeUtils;
 
+@Stateless
 public class ProprietarioServiceImpl {
 
 	@EJB

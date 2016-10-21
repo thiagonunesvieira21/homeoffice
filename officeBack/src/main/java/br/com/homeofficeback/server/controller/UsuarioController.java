@@ -87,4 +87,13 @@ public class UsuarioController {
 	public UsuarioEntity retrieveById(@HeaderParam(HttpHeaders.AUTHORIZATION) String authorization, @PathParam("id") Integer id) {
 		return service.findById(id);
 	}
+	
+	@GET
+	@JWTSecured
+	@Path("/{username}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Recupera por username", notes = "Recupera usuário por username", response = UsuarioEntity.class, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+	public UsuarioEntity retrieveByUserNamed(@HeaderParam(HttpHeaders.AUTHORIZATION) String authorization, @PathParam("username") String username) {
+		return service.findByUserName(username);
+	}
 }

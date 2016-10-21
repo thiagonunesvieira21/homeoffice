@@ -25,7 +25,7 @@ public class Service extends Application {
 		conf.setTitle("HomeOfiice API");
 		conf.setDescription("The rest app to home office");
 		conf.setVersion("1.0.0");
-		conf.setHost("localhost:8080");
+		conf.setHost("localhost:8443");
 		conf.setBasePath("/homeoffice/v1");
 		conf.setSchemes(new String[] { "http", "https" });
 		conf.setResourcePackage("br.com.homeofficeback");

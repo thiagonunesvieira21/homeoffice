@@ -17,6 +17,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "tb002_comercio", schema = "public", uniqueConstraints = {
 		@UniqueConstraint(columnNames = "nu_comercio", name = "pk_tb002"), })
@@ -265,6 +267,7 @@ public class ComercioEntity extends BaseEntity<Integer>  implements Serializable
 	}
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "comercio")
+	@JsonIgnore
 	public Set<ProprietarioEntity> getProprietarios() {
 		return proprietarios;
 	}

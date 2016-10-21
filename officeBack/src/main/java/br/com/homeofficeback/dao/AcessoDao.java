@@ -7,6 +7,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import br.com.homeofficeback.entity.AcessoEntity;
@@ -16,12 +17,16 @@ import br.com.homeofficeback.entity.AcessoPkEntity;
 public class AcessoDao extends GenericDaoJpaImpl<AcessoEntity, AcessoPkEntity> {
 
 	public List<AcessoEntity> findByUsuarioAndComercio(String usuario, Integer comercio) {
+
 		List<javax.persistence.criteria.Order> orders = new ArrayList<>();
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		CriteriaQuery<AcessoEntity> cq = cb.createQuery(AcessoEntity.class);
 		Root<AcessoEntity> root = cq.from(AcessoEntity.class);
-		cq.where(cb.and(cb.equal(root.get("comercio").get("id"), comercio),
-				cb.equal(root.get("usuario").get("deLogin"), usuario)));
+
+		Predicate p1 = cb.and(cb.equal(root.get("comercio").get("id"), comercio));
+		Predicate p2 = cb.and(cb.equal(root.get("usuario").get("deLogin"), usuario));
+
+		cq.where(p1, p2);
 
 		orders.add(cb.desc(root.get("dtAcesso")));
 		cq.orderBy(orders);
@@ -35,6 +40,19 @@ public class AcessoDao extends GenericDaoJpaImpl<AcessoEntity, AcessoPkEntity> {
 		CriteriaQuery<AcessoEntity> cq = cb.createQuery(AcessoEntity.class);
 		Root<AcessoEntity> root = cq.from(AcessoEntity.class);
 		cq.where(cb.and(cb.equal(root.get("comercio").get("id"), comercio), cb.equal(root.get("dtAcesso"), date)));
+
+		return entityManager.createQuery(cq).getResultList();
+	}
+
+	public List<AcessoEntity> findByUsuario(String username) {
+		List<javax.persistence.criteria.Order> orders = new ArrayList<>();
+		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+		CriteriaQuery<AcessoEntity> cq = cb.createQuery(AcessoEntity.class);
+		Root<AcessoEntity> root = cq.from(AcessoEntity.class);
+		cq.where(cb.and(cb.equal(root.get("usuario").get("deLogin"), username)));
+
+		orders.add(cb.desc(root.get("dtAcesso")));
+		cq.orderBy(orders);
 
 		return entityManager.createQuery(cq).getResultList();
 	}

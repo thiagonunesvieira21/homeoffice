@@ -1,5 +1,6 @@
 package br.com.homeofficeback.server.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -10,13 +11,16 @@ import org.jose4j.jwt.GeneralJwtException;
 
 import br.com.homeofficeback.dao.AcessoDao;
 import br.com.homeofficeback.dao.CartelaDao;
+import br.com.homeofficeback.dao.UsuarioDao;
 import br.com.homeofficeback.entity.AcessoEntity;
 import br.com.homeofficeback.entity.AcessoPkEntity;
 import br.com.homeofficeback.entity.CartelaEntity;
 import br.com.homeofficeback.entity.CartelaPkEntity;
+import br.com.homeofficeback.entity.UsuarioEntity;
 import br.com.homeofficeback.enuns.Status;
 import br.com.homeofficeback.enuns.StatusAcesso;
 import br.com.homeofficeback.enuns.TipoAcesso;
+import br.com.homeofficeback.model.AcessoResult;
 import br.com.homeofficeback.model.CadastrarAcesso;
 import br.com.homeofficeback.model.PesquisaAcessoComercio;
 import br.com.homeofficeback.util.HomeOfficeUtils;
@@ -30,14 +34,23 @@ public class AcessoServiceImpl {
 	@EJB
 	private CartelaDao cartelaDao;
 	
+	@EJB
+	private UsuarioDao usuarioDao;
+	
 	public AcessoEntity findById(AcessoPkEntity id){
 		return dao.find(id);
 	}
 	
-	public AcessoPkEntity create(CadastrarAcesso cadastrarAcesso) throws GeneralJwtException{
+	public AcessoPkEntity create(String userName, CadastrarAcesso cadastrarAcesso) throws GeneralJwtException{
 		AcessoEntity entity = new AcessoEntity();
 		
-		HomeOfficeUtils.copyProperties(entity, cadastrarAcesso);
+		UsuarioEntity user = usuarioDao.findByUserName(userName);
+				
+		entity.setUsuario(user);
+		entity.setCoStatus(cadastrarAcesso.getCoStatus());
+		entity.setCoTipoAcesso(cadastrarAcesso.getCoTipoAcesso());
+		entity.setDtAcesso(cadastrarAcesso.getDtAcesso());
+		entity.setId(new AcessoPkEntity(user.getId(), cadastrarAcesso.getComercio(), cadastrarAcesso.getDtAcesso()));
 		
 		if(entity.getDtAcesso()==null){
 			entity.setDtAcesso(new Date());
@@ -95,12 +108,46 @@ public class AcessoServiceImpl {
 		}
 	}
 
-	public List<AcessoEntity> findByUsuarioAndComercio(String usuario, Integer comercio) {
-		return dao.findByUsuarioAndComercio(usuario, comercio);
+	public List<AcessoResult> findByUsuarioAndComercio(String usuario, Integer comercio) {
+		List<AcessoResult> results = new ArrayList<>();
+		List<AcessoEntity> acessos = dao.findByUsuarioAndComercio(usuario, comercio);
+		
+		for (AcessoEntity acessoEntity : acessos) {
+			AcessoResult acesso = new AcessoResult(); 
+			
+			HomeOfficeUtils.copyProperties(acesso, acessoEntity);
+			HomeOfficeUtils.copyProperties(acesso, acessoEntity.getComercio());
+			
+			acesso.setIdComercio(acessoEntity.getId().getNuComercio());
+			acesso.setIdUsuario(acessoEntity.getId().getNuUsuario());
+		
+			results.add(acesso);
+		}
+		
+		return results;
 	}
 	
 	public List<AcessoEntity> findByDateAndComercio(PesquisaAcessoComercio pesquisaAcessoComercio) {
 		return dao.findByDateAndComercio(pesquisaAcessoComercio.getDataAcesso(), pesquisaAcessoComercio.getComercio());
+	}
+
+	public List<AcessoResult> findByUsuario(String username) {
+		List<AcessoResult> results = new ArrayList<>();
+		List<AcessoEntity> acessos = dao.findByUsuario(username);
+		
+		for (AcessoEntity acessoEntity : acessos) {
+			AcessoResult acesso = new AcessoResult(); 
+			
+			HomeOfficeUtils.copyProperties(acesso, acessoEntity);
+			HomeOfficeUtils.copyProperties(acesso, acessoEntity.getComercio());
+			
+			acesso.setIdComercio(acessoEntity.getId().getNuComercio());
+			acesso.setIdUsuario(acessoEntity.getId().getNuUsuario());
+			acesso.setCoStatus(acessoEntity.getCoStatus());
+			results.add(acesso);
+		}
+		
+		return results;
 	}
 	
 }

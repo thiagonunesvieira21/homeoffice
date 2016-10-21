@@ -11,7 +11,9 @@ public class CadastrarAcesso implements Serializable {
 	private static final long serialVersionUID = -3798728554988035432L;
 
 	@NotNull
-	private Integer usuario, comercio;
+	private Integer comercio;
+
+	private Integer usuario; 
 
 	@NotNull
 	private Date dtAcesso;

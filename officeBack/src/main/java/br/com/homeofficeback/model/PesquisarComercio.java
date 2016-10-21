@@ -1,11 +1,21 @@
 package br.com.homeofficeback.model;
 
 import javax.validation.constraints.Size;
+import javax.ws.rs.FormParam;
 
 public class PesquisarComercio {
 
 	@Size(max = 60)
-	private String deRazaoSocial, noFantazia, noCidade;
+	@FormParam("deRazaoSocial")
+	private String deRazaoSocial;
+	
+	@Size(max = 60)
+	@FormParam("noFantazia")
+	private String noFantazia;
+	
+	@Size(max = 60)
+	@FormParam("noCidade")
+	private String noCidade;
 
 	public PesquisarComercio() {
 		super();

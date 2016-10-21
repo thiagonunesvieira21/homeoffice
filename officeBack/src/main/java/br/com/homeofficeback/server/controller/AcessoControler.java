@@ -2,6 +2,7 @@ package br.com.homeofficeback.server.controller;
 
 import java.util.List;
 
+import javax.ejb.EJB;
 import javax.validation.Valid;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
@@ -22,6 +23,7 @@ import org.jose4j.jwt.GeneralJwtException;
 import br.com.homeofficeback.entity.AcessoEntity;
 import br.com.homeofficeback.entity.AcessoPkEntity;
 import br.com.homeofficeback.entity.ComercioEntity;
+import br.com.homeofficeback.model.AcessoResult;
 import br.com.homeofficeback.model.CadastrarAcesso;
 import br.com.homeofficeback.model.PesquisaAcessoComercio;
 import br.com.homeofficeback.security.JWTSecured;
@@ -36,6 +38,7 @@ public class AcessoControler {
 	@Context
 	protected SecurityContext securityContext;
 	
+	@EJB
 	private AcessoServiceImpl service;
 	
 	@POST
@@ -44,7 +47,9 @@ public class AcessoControler {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "Inclusão", notes = "Cadastro do Acesso", response = Integer.class, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
 	public AcessoPkEntity create(@HeaderParam(HttpHeaders.AUTHORIZATION) String authorization, @Valid CadastrarAcesso cadastrarAcesso) throws GeneralJwtException {
-		return service.create(cadastrarAcesso);
+		String username = securityContext.getUserPrincipal().getName();
+		
+		return service.create(username, cadastrarAcesso);
 	}
 	
 	@PUT
@@ -69,11 +74,22 @@ public class AcessoControler {
 	@JWTSecured
 	@Path("/searchByComercioAndUser/{idComercio}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "Pesquisa", notes = "Pesquisa acessos por comércio e usuário", response = AcessoEntity.class, responseContainer = "List", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
-	public List<AcessoEntity> find(@HeaderParam(HttpHeaders.AUTHORIZATION) String authorization, @PathParam("idComercio") Integer idComercio) {
+	@ApiOperation(value = "Pesquisa", notes = "Pesquisa acessos por comércio e usuário", response = AcessoResult.class, responseContainer = "List", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+	public List<AcessoResult> find(@HeaderParam(HttpHeaders.AUTHORIZATION) String authorization, @PathParam("idComercio") Integer idComercio) {
 		String username = securityContext.getUserPrincipal().getName();
 		
 		return service.findByUsuarioAndComercio(username, idComercio);
+	}
+	
+	@GET
+	@JWTSecured
+	@Path("/searchAllByUser")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Pesquisa", notes = "Pesquisa todos os acessos por usuário", response = AcessoResult.class, responseContainer = "List", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+	public List<AcessoResult> find(@HeaderParam(HttpHeaders.AUTHORIZATION) String authorization) {
+		String username = securityContext.getUserPrincipal().getName();
+		
+		return service.findByUsuario(username);
 	}
 	
 	@GET

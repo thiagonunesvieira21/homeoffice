@@ -152,6 +152,7 @@ public class GenericDaoJpaImpl<T extends BaseEntity<PK>, PK extends Serializable
 		
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		CriteriaQuery<T> cq = cb.createQuery(clazz);
+		cq.from(clazz);
 		cq.where(cb.isNotNull(cb.literal("id")));
 
 		//convert the value String to lowercase

@@ -4,11 +4,9 @@ import java.util.List;
 
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -18,7 +16,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.SecurityContext;
 
 import br.com.homeofficeback.entity.ComercioClientePkEntity;
-import br.com.homeofficeback.entity.UsuarioEntity;
 import br.com.homeofficeback.model.ComercioClienteResult;
 import br.com.homeofficeback.security.JWTSecured;
 import br.com.homeofficeback.server.service.UsuarioServiceImpl;
@@ -38,13 +35,13 @@ public class TransacaoUsuarioController {
 	@Context
     private HttpServletRequest request;
 	
-	@PUT
+	@GET
 	@Path("/vincular/{idComercio}")
 	@JWTSecured
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "Vincular", notes = "Vincula usuário ao comércio", response = ComercioClientePkEntity.class, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
-	public ComercioClientePkEntity vincular(@HeaderParam(HttpHeaders.AUTHORIZATION) String authorization, @PathParam("idComercio") Integer idComercio) {
+	public ComercioClienteResult vincular(@HeaderParam(HttpHeaders.AUTHORIZATION) String authorization, @PathParam("idComercio") Integer idComercio) {
 		String username = securityContext.getUserPrincipal().getName();
 		
 		return service.vincularAoComercio(username, idComercio);
@@ -58,9 +55,8 @@ public class TransacaoUsuarioController {
 	@ApiOperation(value = "Comércio vinculados", notes = "Lista os comércio vinculados", responseContainer="List" ,response = ComercioClienteResult.class, consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
 	public List<ComercioClienteResult> vincular(@HeaderParam(HttpHeaders.AUTHORIZATION) String authorization) {		
 
-		HttpSession session = request.getSession();
-		UsuarioEntity user = (UsuarioEntity) session.getAttribute("sec-user");
+		String username = securityContext.getUserPrincipal().getName();
 		
-		return service.findByUserId(user);
+		return service.findByUserId(username);
 	}
 }

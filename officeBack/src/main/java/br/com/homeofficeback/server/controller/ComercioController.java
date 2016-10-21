@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.ejb.EJB;
 import javax.validation.Valid;
-import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -14,6 +13,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -92,8 +92,8 @@ public class ComercioController {
 	@Path("/search")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "Pesquisa", notes = "Pesquisa usuário", response = ComercioEntity.class, responseContainer = "List", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
-	public List<ComercioEntity> find(@BeanParam PesquisarComercio comercio) {
-		return service.find(comercio);
+	public List<ComercioEntity> find(@HeaderParam(HttpHeaders.AUTHORIZATION) String authorization, @QueryParam("search") String search) {
+		return service.find(new PesquisarComercio(search, search, search));
 	}
 	
 	@GET

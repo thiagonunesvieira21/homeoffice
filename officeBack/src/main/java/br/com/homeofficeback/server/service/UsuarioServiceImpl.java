@@ -109,7 +109,7 @@ public class UsuarioServiceImpl {
 		dao.delete(id);
 	}
 	
-	public ComercioClientePkEntity vincularAoComercio(String userName, Integer idComercio){
+	public ComercioClienteResult vincularAoComercio(String userName, Integer idComercio){
 		ComercioClienteEntity entity = new ComercioClienteEntity();
 		
 		ComercioEntity comercio = comercioDao.find(idComercio);
@@ -123,11 +123,18 @@ public class UsuarioServiceImpl {
 		
 		entity.setId(new ComercioClientePkEntity(usuario, comercio, dtVinculo));
 		
-		return comercioClienteDao.save(entity);
+		comercioClienteDao.save(entity);
+		
+		ComercioClienteResult dest = new ComercioClienteResult();
+		
+		HomeOfficeUtils.copyProperties(dest, entity.getId().getComercio());
+		
+		return dest;
 	}
 	
 	
-	public List<ComercioClienteResult> findByUserId(UsuarioEntity user){
+	public List<ComercioClienteResult> findByUserId(String userName){
+		UsuarioEntity user = dao.findByUserName(userName);
 		List<ComercioClienteEntity> list = comercioClienteDao.findByUserId(user.getId());
 		List<ComercioClienteResult> result = new ArrayList<>();
 		
